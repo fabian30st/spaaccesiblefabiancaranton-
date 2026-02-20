@@ -1,0 +1,62 @@
+Diagrama de Navegación (Flujo de Usuario)
+Este diagrama describe cómo los diferentes roles (como Elena o Roberto) se desplazan por la aplicación, destacando los puntos de decisión y accesibilidad.
+
+@startuml
+title Mapa de Navegación Accesible - EcoTienda Local
+
+[*] --> Home : Carga de Página
+Home --> Busqueda : Uso de Buscador (Aria-label)
+Home --> Login : Acceso (Teclado/Mouse)
+
+state Busqueda {
+  [*] --> Resultados : Filtrado
+  Resultados --> DetalleProducto : Selección (Foco visible)
+}
+
+state DetalleProducto {
+  [*] --> Carrito : Añadir (Feedback auditivo/visual)
+}
+
+state Checkout {
+  [*] --> DatosEnvio : Formulario (Labels visibles)
+  DatosEnvio --> PasarelaPago : Validación (Manejo de errores)
+  PasarelaPago --> Confirmacion : Éxito
+}
+
+Confirmacion --> [*]
+
+footer Navegación lógica siguiendo estándares WCAG 2.2
+@enduml
+
+Diagrama de Componentes (Arquitectura Técnica)
+Este diagrama muestra cómo se organiza el software internamente, separando la interfaz de usuario de la lógica de negocio y los servicios de accesibilidad
+@startuml
+package "Frontend - EcoTienda" {
+  [UI Components] <<Wireframes>>
+  [Navigation Manager] <<Keyboard/Tab>>
+  [A11y Engine] <<Aria-Live/Alt-Text>>
+}
+
+package "Backend - Logic" {
+  [Product Service]
+  [Order Manager]
+  [User Profile]
+}
+
+database "Data Store" {
+  [Product DB]
+  [User DB]
+}
+
+[UI Components] --> [Navigation Manager] : Estructura DOM
+[UI Components] --> [A11y Engine] : Notificaciones Screen Reader
+[Navigation Manager] --> [Product Service] : Request Data
+[Order Manager] --> [Product DB]
+[UserProfile] --> [User DB]
+
+node "External Services" {
+  [Payment Gateway]
+}
+
+[Order Manager] --> [Payment Gateway]
+@enduml
